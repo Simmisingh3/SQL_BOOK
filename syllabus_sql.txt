@@ -1,0 +1,85 @@
+Complete SQL (Topic wise):-
+
+1. Basic SQL Syntax:
+SQL keywords
+Data types
+Operators
+SQL statements (SELECT, INSERT, UPDATE, DELETE)
+
+2. Data Definition Language (DDL):
+CREATE TABLE
+ALTER TABLE
+DROP TABLE
+Truncate table
+
+3. Data Manipulation Language (DML):
+SELECT statement (SELECT, FROM, WHERE, ORDER BY, GROUP BY, HAVING, JOINs)
+INSERT statement
+UPDATE statement
+DELETE statement
+
+4. Aggregate Functions:
+SUM, AVG, COUNT, MIN, MAX
+GROUP BY clause
+HAVING clause
+5. Data Constraints:
+Primary Key
+Foreign Key
+Unique
+NOT NULL
+CHECK
+
+6. Joins:
+INNER JOIN
+LEFT JOIN
+RIGHT JOIN
+FULL OUTER JOIN
+Self Join
+Cross Join
+
+7. Subqueries:
+Types of subqueries (scalar, column, row, table)
+Nested subqueries
+Correlated subqueries
+
+8. Advanced SQL Functions:
+String functions (CONCAT, LENGTH, SUBSTRING, REPLACE, UPPER, LOWER)
+Date and time functions (DATE, TIME, TIMESTAMP, DATEPART, DATEADD)
+Numeric functions (ROUND, CEILING, FLOOR, ABS, MOD)
+Conditional functions (CASE, COALESCE, NULLIF)
+
+9. Views:
+Creating views
+Modifying views
+Dropping views
+
+10. Indexes:
+Creating indexes
+Using indexes for query optimization
+
+11. Transactions:
+ACID properties
+Transaction management (BEGIN, COMMIT, ROLLBACK, SAVEPOINT)
+Transaction isolation levels
+
+12. Data Integrity and Security:
+Data integrity constraints (referential integrity, entity integrity)
+GRANT and REVOKE statements (granting and revoking permissions)
+Database security best practices
+
+13. Stored Procedures and Functions:
+Creating stored procedures
+Executing stored procedures
+Creating functions
+Using functions in queries
+
+14. Performance Optimization:
+Query optimization techniques (using indexes, optimizing joins, reducing subqueries)
+Performance tuning best practices
+
+15. Advanced SQL Concepts:
+Recursive queries
+Pivot and unpivot operations
+Window functions (Row_number, rank, dense_rank, lead & lag)
+CTEs (Common Table Expressions)
+Dynamic SQL

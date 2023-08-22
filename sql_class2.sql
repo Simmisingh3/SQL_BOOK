@@ -1,0 +1,2 @@
+show DATABASES;
+use 
