@@ -574,7 +574,8 @@ select*from content;
 
 select distinct c.title from content c 
 inner join  tvprogram t
-on c.content_id=t.content_id
+on c.content_id
+=t.content_id
 where year(program_date)='2020' and month(program_date)='06' and kids_content='Y';
 
 # Q 30
@@ -660,5 +661,327 @@ select eu.unique_id, e.name from employeeuni eu
 right join employees_32 e
 on eu.id = e.id
 order by `name` asc;
+
+# Q 33
+create table users33(
+id int,
+`name` varchar(25),
+primary key(id)
+);
+
+create table Rides(
+id int,
+user_id int,
+distance int,
+primary key(id)
+);
+
+insert into users33 values
+(1, 'Alice'),
+(2, 'Bob'),
+(3, 'Alex'),
+(4, 'Donald'),
+(7, 'Lee'),
+(13, 'Jonathan'),
+(19, 'Elvis');
+
+insert into rides values 
+(1, 1, 120),
+(2, 2, 317),
+(3, 3, 222),
+(4, 7, 100),
+(5, 13, 312),
+(6, 19, 50),
+(7, 7, 120),
+(8, 19, 400),
+(9, 7, 230);
+
+# Write an SQL query to report the distance travelled by each user.
+# Return the result table ordered by travelled_distance in descending order, if two or more users
+# travelled the same distance, order them by their name in ascending order
+select*from users33;
+select*from rides;
+
+select `name`, coalesce(sum(distance),0) as travelled_distance from  users33 us
+left join rides rd
+on us.id = rd.user_id
+group by `name`
+order by travelled_distance desc, `name` ;
+
+# Q 34
+create table if not exists Products34(
+product_id int,
+product_name varchar(25),
+product_category varchar(25),
+primary key(product_id)
+);
+
+create table Orders34 (
+product_id int,
+order_date date,
+unit int,
+foreign key (product_id) references Products34(product_id)
+);
+
+insert into Products34 values
+(1, 'Leetcode Solutions', 'Book'),
+(2, 'Jewels of Stringology', 'Book'),
+(3, 'HP', 'Laptop'),
+(4, 'Lenovo', 'Laptop'),
+(5, 'Leetcode Kit', 'T-shirt');
+
+insert into orders34 values
+(1, '2020-02-05', 60),
+(1, '2020-02-10', 70),
+(2, '2020-01-18', 30),
+(2, '2020-02-11', 80),
+(3, '2020-02-17', 2),
+(3, '2020-02-24', 3),
+(4, '2020-03-01', 20),
+(4, '2020-03-04', 30),
+(4, '2020-03-04', 60),
+(5, '2020-02-25', 50),
+(5, '2020-02-27', 50),
+(5, '2020-03-01', 50);
+
+select*from Products34;
+select*from orders34;
+# Write an SQL query to get the names of products that have at least 100 units ordered in February 2020
+# and their amount
+
+select product_name, sum(unit) as total_unit from Products34 pd
+left join orders34 od
+on pd.product_id=od.product_id
+where (order_date between '2020-02-01' and '2020-02-29') 
+group by product_name 
+having total_unit>=100;
+
+# 35 
+create table movies (
+movie_id int,
+title varchar(30),
+primary key(movie_id)
+);
+create table users35 (
+user_id int,
+`name` varchar(30),
+primary key(user_id)
+);
+create table MovieRating(
+movie_id int,
+user_id int,
+rating int,
+created_at date,
+primary key(movie_id,user_id)
+);
+insert into movies values
+(1, 'Avengers'),
+(2, 'Frozen 2'),
+(3, 'Joker');
+insert into users35 values
+(1, 'Daniel'),
+(2, 'Monica'),
+(3, 'Maria'),
+(4, 'James');
+insert into Movierating values
+(1, 1, 3, '2020-01-12'),
+(1, 2, 4, '2020-02-11'),
+(1, 3, 2, '2020-02-12'),
+(1, 4, 1, '2020-01-01'),
+(2, 1, 5, '2020-02-17'),
+(2, 2, 2, '2020-02-01'),
+(2, 3, 2, '2020-03-01'),
+(3, 1, 3, '2020-02-22'),
+(3, 2, 4, '2020-02-25');
+# Write an SQL query to:
+# ● Find the name of the user who has rated the greatest number of movies. In case of a tie,
+# return the lexicographically smaller user name.
+# ● Find the movie name with the highest average rating in February 2020. In case of a tie, return
+# the lexicographically smaller movie name.
+select*from movies;
+select*from users35;
+select*from movierating;
+
+select t1.name as Results from
+(select u.name, count(u.user_id), dense_rank() over(order by count(user_id) 
+desc, u.name) as r1 FROM
+Users35 u
+left join
+MovieRating m
+on u.user_id = m.user_id
+group by u.user_id) t1
+where r1 = 1
+union
+(select t2.title as Results from
+(select mo.title, avg(m.rating), dense_rank() over(order by avg(m.rating)desc, 
+mo.title) as r2 from
+Movies mo
+left join
+MovieRating m
+on mo.movie_id = m.movie_id
+where month(m.created_at) = 2 and year(m.created_at) = 2020
+group by m.movie_id)t2
+where r2 = 1);
+
+# Q 36 and Q37 Already done
+
+# Q 38
+create table Departments (
+id int,
+name varchar(30),
+primary key(id)
+);
+
+create table students(
+id int,
+`name` varchar(30),
+department_id int,
+primary key(id)
+);
+insert into departments values
+(1, 'Electrical Engineering'),
+(7, 'Computer Engineering'),
+(13, 'Business Administration');
+insert into students values
+(23, 'Alice', 1),
+(1, 'Bob', 7),
+(5, 'Jennifer', 13),
+(2, 'John', 14),
+(4, 'Jasmine', 77),
+(3, 'Steve', 74),
+(6, 'Luis', 1),
+(8, 'Jonathan', 7),
+(7, 'Daiana', 33),
+(11, 'Madelynn', 1);
+# Write an SQL query to find the id and the name of all students who are enrolled in departments that no
+# longer exist
+select id, name from students
+where department_id not in (select id from departments);
+ 
+# Q 39
+create table calls (
+from_id int,
+to_id int,
+duration int
+);
+insert into calls values 
+(1, 2, 59),
+(2, 1, 11),
+(1, 3, 20),
+(3, 4, 100),
+(3, 4, 200),
+(3, 4, 200),
+(4, 3, 499);
+# Write an SQL query to report the number of calls and the total call duration between each pair of
+# distinct persons (person1, person2) where person1 < person2
+
+select*from calls; 
+select t.person1, t.person2,
+count(*) as call_count,
+sum(t.duration) as total_duration
+from 
+(select duration,
+case when from_id<to_id then from_id else to_id end as person1,
+case when from_id>to_id then from_id else to_id end as person2
+ from calls) t
+group by person1, person2;
+
+# Q 40
+create table prices40(
+product_id int,
+start_date date,
+end_date date,
+price int,
+primary key(product_id, start_date, end_date)
+);
+create table UnitsSold40(
+product_id int,
+purchase_date date,
+units int
+);
+
+# 40) Write an SQL query to find the average selling price for each product. average_price should be
+#rounded to 2 decimal places.
+
+insert into Prices40 values(1, '2019-02-17', '2019-02-28', 5),
+(1, '2019-03-01', '2019-03-22', 20),
+(2, '2019-02-01', '2019-02-20', 15),
+(2, '2019-02-21', '2019-03-31', 30);
+select*from prices40;
+insert into UnitsSold values(1, '2019-02-25', 100),
+(1, '2019-03-01', 15),
+(2, '2019-02-10', 200),
+(2, '2019-03-22', 30);
+select*from unitssold40;
+select p.product_id,
+round((sum(p.price * u.units))/(sum(u.units)), 2) as average_price from Prices40 p
+inner join unitssold40 u on
+p.product_id=u.product_id
+where purchase_date>= start_date and purchase_date<=end_date
+group by p.product_id;
+
+# Q 41
+create table Warehouse(
+`name` varchar(30),
+product_id int,
+units int,
+primary key(`name`, product_id)
+);
+create table products41(
+product_id int,
+product_name varchar(30),
+Width int,
+Length int,
+Height int,
+primary key(product_id)
+);
+insert into Warehouse values
+('LCHouse1', 1, 1),
+('LCHouse1', 2, 10),
+('LCHouse1', 3, 5),
+('LCHouse2', 1, 2),
+('LCHouse2', 2, 2),
+('LCHouse3', 4, 1);
+insert into products41 values
+(1, 'LC-TV', 5, 50, 40),
+(2, 'LC-KeyChain', 5, 5, 5),
+(3, 'LC-Phone', 2, 10, 10),
+(4, 'LC-T-Shirt', 4, 10, 20);
+select*from Warehouse;
+select*from products41;
+# Write an SQL query to report the number of cubic feet of volume the inventory occupies in each
+# warehouse.
+select w.name, sum(p.width*p.length*p.height*w.units) as volume from Warehouse w
+left join products41 p on
+w.product_id=p.product_id
+group by w.name ;
+
+# Q42)
+create table Sales42(
+sale_date date,
+fruit enum('apples','oranges'),
+sold_num int,
+primary key(sale_date, fruit)
+);
+insert into sales42 values
+('2020-05-01', 'apples', 10),
+('2020-05-01', 'oranges', 8),
+('2020-05-02', 'apples', 15),
+('2020-05-02', 'oranges', 15),
+('2020-05-03', 'apples', 20),
+('2020-05-03', 'oranges', 0),
+('2020-05-04', 'apples', 15),
+('2020-05-04', 'oranges', 16);
+
+# Write an SQL query to report the difference between the number of apples and oranges sold each day.
+# Return the result table ordered by sale_date
+select*from sales42;
+select  d.sale_date, ( d.apples_sold-d.oranges_sold) as diff 
+from  (select sale_date, 
+max(case when fruit= 'apples' then sold_num else 0 end) as apples_sold,
+max(case when fruit='oranges' then sold_num else 0 end) as oranges_sold
+from sales42
+group by sale_date) d
+ order by d.sale_date;
 
 
