@@ -1016,3 +1016,114 @@ datediff(event_date, lead(event_date,1) over(partition by player_id order by
 event_date)) as diff
 from activity43) t
 where diff = -1;
+
+# Q 44 
+create table Employee44(
+id int,
+`name` varchar(30),
+department varchar(30),
+managerId int,
+primary key(id)
+);
+insert into Employee44 values
+(101, 'John', 'A', Null),
+(102, 'Dan', 'A', 101),
+(103, 'James', 'A', 101),
+(104, 'Amy', 'A', 101),
+(105, 'Anne', 'A', 101),
+(106, 'Ron', 'B', 101);
+# Q Write an SQL query to report the managers with at least five direct reports.
+select * from employee44;
+select t.name from
+(select a.id, a.name, count(b.managerID) as no_of_direct_reports from
+employee44 a
+inner join
+employee44 b
+on a.id = b.managerID
+group by b.managerID) t
+where no_of_direct_reports >= 5
+order by t.name;
+
+# Q 45
+create table department_45(
+dept_id int,
+dept_name varchar(30),
+primary key(dept_id)
+); 
+insert into department_45 values
+(1, 'Engineering'),
+(2, 'Science'),
+(3, 'Law');
+
+create table student45(
+student_id int,
+student_name varchar(30),
+gender varchar(30),
+dept_id int,
+primary key(student_id),
+foreign key(dept_id) references department_45(dept_id)
+);
+insert into student45 values
+(1, 'Jack', 'M', 1),
+(2, 'Jane', 'F', 1),
+(3, 'Mark', 'M', 2);
+
+# Q Write an SQL query to report the respective department name and number of students majoring in
+# each department for all departments in the Department table (even ones with no current students).
+# Return the result table ordered by student_number in descending order. In case of a tie, order them by
+# dept_name alphabetically
+select*from department_45;
+select*from student45;
+select d.dept_name, count(distinct s.student_id) as no_of_students from 
+student45 s
+Right join 
+department_45 d
+on d.dept_id = s.dept_id 
+group by d.dept_name
+order by no_of_students desc;
+
+# Both answers are correct
+
+select d.dept_name, count(s.dept_id) as student_number from
+department_45 d
+left join
+student45 s
+on s.dept_id = d.dept_id
+group by d.dept_id
+order by student_number desc, dept_name;
+
+# Q 46
+create table Product_46(
+product_key int,
+primary key(product_key)
+);
+insert into Product_46 values
+(5),
+(6);
+
+create table Customer_46 (
+customer_id int,
+product_key int,
+foreign key(product_key) references product_46(product_key)
+);
+
+insert into Customer_46 values
+(1, 5),
+(2, 6),
+(3, 5),
+(3, 6),
+(1, 6);
+
+# Q Write an SQL query to report the customer ids from the Customer table that bought all the products in
+# the Product table
+select*from Product_46;
+select*from Customer_46;
+select distinct c.customer_id from Customer_46 c
+inner join 
+Product_46 p
+on 
+p.product_key = c.product_key
+group by c.customer_id
+having count(distinct p.product_key)=(select count(*) from product_46);
+
+
