@@ -1126,4 +1126,50 @@ p.product_key = c.product_key
 group by c.customer_id
 having count(distinct p.product_key)=(select count(*) from product_46);
 
+# Q 47
+create table employee_47
+(
+employee_id int,
+`name` varchar(30),
+experience_years int,
+primary key(employee_id)
+);
 
+create table Project_47
+(
+project_id int,
+employee_id int,
+primary key(project_id, employee_id),
+foreign key(employee_id) references employee_47(employee_id)
+);
+
+insert into employee_47 values
+(1, 'Khaled', 3),
+(2, 'Ali', 2),
+(3, 'John', 3),
+(4, 'Doe', 2);
+
+insert into project_47 values
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 1),
+(2, 4);
+
+select*from project_47;
+select*from employee_47;
+# Write an SQL query that reports the most experienced employees in each project. In case of a tie,
+# report all employees with the maximum number of experience years.
+
+
+select t.project_id, t.employee_id
+from
+(select p.project_id, e.employee_id, dense_rank() over(partition by p.project_id 
+order by e.experience_years desc) as r
+from
+project_47 p
+left join
+employee_47 e
+on p.employee_id = e.employee_id) t
+where r = 1
+order by t.project_id;
