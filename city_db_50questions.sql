@@ -1173,3 +1173,127 @@ employee_47 e
 on p.employee_id = e.employee_id) t
 where r = 1
 order by t.project_id;
+
+# Q 48
+create table books_48 (
+book_id int,
+`name` varchar(30),
+available_from date,
+primary key (book_id)
+);
+create table orders_48 (
+order_id int,
+book_id int,
+quantity int,
+dispatch_date date,
+primary key(order_id),
+foreign key(book_id) references books_48(book_id)
+);
+insert into books_48 values
+(1, "Kalila And Demna", '2010-01-01'),
+(2, "28 Letters", '2012-05-12'),
+(3, "The Hobbit", '2019-06-10'),
+(4, "13 Reasons Why", '2019-06-01'),
+(5, "The Hunger Games", '2008-09-21');
+insert into orders_48 values
+(1, 1, 2, '2018-07-26'),
+(2, 1, 1, '2018-11-05'),
+(3, 3, 8, '2019-06-11'),
+(4, 4, 6, '2019-06-05'),
+(5, 4, 5, '2019-06-20'),
+(6, 5, 9, '2009-02-02'),
+(7, 5, 8, '2010-04-13');
+
+# Q Write an SQL query that reports the books that have sold less than 10 copies in the last year,
+# excluding books that have been available for less than one month from today. Assume today is
+# 2019-06-23.
+
+select t1.book_id, t1.name
+from
+(
+(select book_id, name from Books_48 where
+available_from < '2019-05-23') t1
+left join
+(select book_id, sum(quantity) as quantity
+from Orders_48
+where dispatch_date > '2018-06-23' and dispatch_date<= '2019-06-23'
+group by book_id
+having quantity < 10) t2
+on t1.book_id = t2.book_id
+);
+
+# 49 
+create table enrollments (
+student_id int,
+course_id int,
+grade int,
+primary key(student_id, course_id)
+);
+insert into enrollments values 
+(2, 2, 95),
+(2, 3, 95),
+(1, 1, 90),
+(1, 2, 99),
+(3, 1, 80),
+(3, 2, 75),
+(3, 3, 82);
+
+# Q Write a SQL query to find the highest grade with its corresponding course for each student. In case of
+# a tie, you should find the course with the smallest course_id.
+# Return the result table ordered by student_id in ascending order
+select*from enrollments;
+select t.student_id, t.course_id, t.grade 
+from
+(select student_id, course_id, grade, dense_rank() over(partition by student_id 
+order by grade desc, course_id) as r
+from enrollments) t
+where r = 1
+order by t.student_id asc;
+
+# Q 50
+create table Players_50
+(
+player_id int primary key,
+group_id int
+);
+create table Matches 
+(
+match_id int primary key,
+host_team int,
+guest_team int,
+host_goals int,
+guest_goals int
+);
+insert into Players_50 values
+(15, 1),
+(25, 1),
+(30, 1),
+(45, 1),
+(10, 2),
+(35, 2),
+(50, 2),
+(20, 3),
+(40, 3);
+insert into Matches values
+(1, 15, 45, 3, 0),
+(2, 30, 25, 1, 2),
+(3, 30, 15, 2, 0),
+(4, 40, 20, 5, 2),
+(5, 35, 50, 1, 1);
+select*from Matches;
+
+select t2.group_id, t2.player_id from
+(
+select t1.group_id, t1.player_id, 
+dense_rank() over(partition by group_id order by score desc, player_id) as r
+from
+(
+select p.*, case when p.player_id = m.first_player then m.first_score
+when p.player_id = m.second_player then m.second_score
+end as score
+from
+Players_50 p, Matches m
+where player_id in (first_player, second_player)
+) t1
+) t2
+where r = 1;
